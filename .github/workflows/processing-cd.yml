@@ -22,7 +22,6 @@ on:
       - source/business-workflow/**
       - .github/workflows/processing-cd.yml
       - .github/actions/dotnet-build-and-test/**
-      - .github/actions/azure-core-tools-install/**
   workflow_dispatch: {}
 
 env:
