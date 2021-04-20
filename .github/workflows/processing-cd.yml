@@ -27,7 +27,7 @@ on:
 env:
   CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoints.Processing/Energinet.DataHub.MarketRoles.EntryPoints.Processing.csproj'
   SOLUTION_FILE_PATH: 'source/business-workflow/Energinet.DataHub.MarketRoles.sln'
-  DOTNET_VERSION: '5.0.202'
+  DOTNET_VERSION: '5'
   ORGANISATION_NAME: 'endk'
   AZURE_FUNCTIONAPP_NAME: 'processing'
   PROJECT_NAME: marketroles
@@ -40,6 +40,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
 
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1
