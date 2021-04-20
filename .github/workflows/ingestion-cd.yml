@@ -22,7 +22,6 @@ on:
       - source/business-workflow/**
       - .github/workflows/ingestion-cd.yml
       - .github/actions/dotnet-build-and-test/**
-      - .github/actions/azure-core-tools-install/**
   workflow_dispatch: {}
 
 env:
@@ -42,12 +41,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@master
 
-      - name: Setup Azure Core Tools
-        uses: ./.github/actions/azure-core-tools-install
-        
-      - name: test
-        shell: bash
-        run: func --version
+      - name: Setup .NET 3.1 environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
 
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1

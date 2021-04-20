@@ -39,8 +39,7 @@ jobs:
           paths: '[
             "source/business-workflow/**",
             ".github/workflows/processing-ci.yml",
-            ".github/actions/dotnet-build-and-test/**",
-            ".github/actions/azure-core-tools-install/**"
+            ".github/actions/dotnet-build-and-test/**"
           ]'
 
   validate_build_processing:
@@ -52,9 +51,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@master
 
-      - name: Setup Azure Core Tools
-        uses: ./.github/actions/azure-core-tools-install
-        
+      - name: Setup .NET 3.1 environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
+              
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1
         with:
