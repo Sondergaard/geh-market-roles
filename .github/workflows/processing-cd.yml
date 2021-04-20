@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: BusinessProcessing CD
+name: Processing CD
 
 on:
   push:
@@ -19,22 +19,22 @@ on:
       - main
     paths:
       - source/business-workflow/**
-      - .github/workflows/businessprocessing-cd.yml
+      - .github/workflows/processing-cd.yml
       - .github/actions/dotnet-build-and-test/**
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoint/Energinet.DataHub.MarketRoles.EntryPoint.csproj'
+  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoints.Processing/Energinet.DataHub.MarketRoles.EntryPoints.Processing.csproj'
   SOLUTION_FILE_PATH: 'source/business-workflow/Energinet.DataHub.MarketRoles.sln'
-  DOTNET_VERSION: '3.1'
+  DOTNET_VERSION: '5.0.202'
   ORGANISATION_NAME: 'endk'
-  AZURE_FUNCTIONAPP_NAME: 'businessprocessing'
+  AZURE_FUNCTIONAPP_NAME: 'processing'
   PROJECT_NAME: marketroles
   REPOSITORY_NAME: Energinet-DataHub/geh-market-roles
 
 jobs:
-  build_businessprocessing:
-    name: Build BusinessProcessing
+  build_processing:
+    name: Build Processing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -58,9 +58,9 @@ jobs:
           name: drop
           path: '${{ github.workspace }}/output'
     
-  deploy_businessprocessing:
+  deploy_processing:
     name: Deploy function to ${{ matrix.environment.name }} - ${{ matrix.environment.long }}
-    needs: build_businessprocessing
+    needs: build_processing
     runs-on: ubuntu-latest
     strategy:
       matrix:

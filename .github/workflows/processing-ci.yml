@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: BusinessProcessing CI
+name: Processing CI
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoint/Energinet.DataHub.MarketRoles.EntryPoint.csproj'
+  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoints.Processing/Energinet.DataHub.MarketRoles.EntryPoints.Processing.csproj'
   SOLUTION_FILE_PATH: 'source/business-workflow/Energinet.DataHub.MarketRoles.sln'
   DOTNET_VERSION: '3.1'
 
@@ -37,14 +37,14 @@ jobs:
           github_token: ${{ github.token }}
           paths: '[
             "source/business-workflow/**",
-            ".github/workflows/businessprocessing-ci.yml",
+            ".github/workflows/processing-ci.yml",
             ".github/actions/dotnet-build-and-test/**"
           ]'
 
-  validate_build_businessworkflow:
+  validate_build_processing:
     needs: pre_job
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-    name: Validate build BusinessProcessing
+    name: Validate build Processing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
