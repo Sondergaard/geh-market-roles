@@ -17,6 +17,7 @@ on:
   push:
     branches:
       - main
+      - cmgrd/dotnet-playground
     paths:
       - source/business-workflow/**
       - .github/workflows/processing-cd.yml
