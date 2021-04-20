@@ -9,7 +9,7 @@ namespace Energinet.DataHub.MarketRoles.EntryPoints.Processing
     {
         [Function("QueueSubscriber")]
         public static string Run(
-            [ServiceBusTrigger("sbq-marketroles", Connection = "ServiceBusConnection")] byte[] item,
+            [ServiceBusTrigger("sbq-marketroles", Connection = "MARKET_DATA_QUEUE_CONNECTION_STRING")] byte[] item,
             FunctionContext context)
         {
             var logger = context.GetLogger("ServiceBusFunction");
