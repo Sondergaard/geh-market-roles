@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 
 [assembly: CLSCompliant(false)]
 
-namespace Energinet.DataHub.MarketRoles.EntryPoint
+namespace Energinet.DataHub.MarketRoles.EntryPoints.Processing
 {
     public static class Program
     {

@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace Energinet.DataHub.MarketRoles.EntryPoint
+namespace Energinet.DataHub.MarketRoles.EntryPoints.Processing
 {
     public static class QueueSubscriber
     {

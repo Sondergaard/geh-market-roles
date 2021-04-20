@@ -11,7 +11,7 @@ namespace TestTool
         {
             Console.WriteLine("Hello World!");
 
-            var connectionString = "Endpoint=sb://sbn-marketroles-endk-u.servicebus.windows.net/;SharedAccessKeyName=sbnar-marketroles-sender;SharedAccessKey=AfdqQW2mvvukN4NjyyrbKWrLnA0/aU41oQflBzoQjF4=";
+            var connectionString = "Endpoint=sb://sbn-marketroles-endk-u.servicebus.windows.net/;SharedAccessKeyName=sbnar-marketroles-sender;SharedAccessKey=WaLoUfq7BWX1El6Rcp/30ZMhZZroeTZUpnbbsfTe5wg=";
             var topicName = "sbq-marketroles";
 
             // create a Service Bus client
@@ -19,7 +19,7 @@ namespace TestTool
             {
                 // create a sender for the topic
                 ServiceBusSender sender = client.CreateSender(topicName);
-                var content = "Hello, Søren!";
+                var content = "Hello, René!";
                 var bytes = Encoding.UTF8.GetBytes(content);
                 await sender.SendMessageAsync(new ServiceBusMessage(bytes));
                 Console.WriteLine($"Sent a single message to the topic: {topicName}");
