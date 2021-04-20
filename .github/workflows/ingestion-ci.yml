@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: Processing CI
+name: Ingestion CI
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoints.Processing/Energinet.DataHub.MarketRoles.EntryPoints.Processing.csproj'
+  CSPROJ_FILE_PATH: 'source/business-workflow/source/Energinet.DataHub.MarketRoles.EntryPoints.Ingestion/Energinet.DataHub.MarketRoles.EntryPoints.Ingestion.csproj'
   SOLUTION_FILE_PATH: 'source/business-workflow/Energinet.DataHub.MarketRoles.sln'
   DOTNET_VERSION: '5.0'
 
@@ -38,15 +38,15 @@ jobs:
           github_token: ${{ github.token }}
           paths: '[
             "source/business-workflow/**",
-            ".github/workflows/processing-ci.yml",
+            ".github/workflows/ingestion-ci.yml",
             ".github/actions/dotnet-build-and-test/**",
             ".github/actions/azure-core-tools-install/**"
           ]'
 
-  validate_build_processing:
+  validate_build_ingestion:
     needs: pre_job
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-    name: Validate build Processing
+    name: Validate build ingestion
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
