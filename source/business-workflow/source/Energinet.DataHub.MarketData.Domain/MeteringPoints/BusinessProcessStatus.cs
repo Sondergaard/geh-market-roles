@@ -14,7 +14,7 @@
 
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier
+namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 {
     internal class BusinessProcessStatus : EnumerationType
     {
