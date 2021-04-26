@@ -192,10 +192,11 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
 
         private void CleanupDatabase()
         {
-            var cleanupStatement = $"DELETE FROM [dbo].[Relationships] " +
-                                   $"DELETE FROM [dbo].[MarketParticipants] " +
-                                   $"DELETE FROM [dbo].[MarketEvaluationPoints] " +
-                                   $"DELETE FROM [dbo].[OutgoingActorMessages]";
+            var cleanupStatement =
+                $"DELETE FROM [dbo].[OutgoingActorMessages] " +
+                $"DELETE FROM [dbo].[Relationships] " +
+                $"DELETE FROM [dbo].[MarketParticipants] " +
+                $"DELETE FROM [dbo].[MarketEvaluationPoints]";
 
             _writeDatabaseContext.Database.ExecuteSqlRaw(cleanupStatement);
             _writeDatabaseContext.Dispose();
