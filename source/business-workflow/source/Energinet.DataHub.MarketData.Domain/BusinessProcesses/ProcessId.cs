@@ -21,14 +21,10 @@ namespace Energinet.DataHub.MarketData.Domain.BusinessProcesses
     {
         public ProcessId(string value)
         {
-            Value = value;
+            Value = !string.IsNullOrWhiteSpace(value) ? value : throw new ArgumentNullException(nameof(value));
         }
 
-        public ProcessId()
-        {
-        }
-
-        public string? Value { get; set; }
+        public string Value { get; set; }
 
         public override string ToString()
         {
