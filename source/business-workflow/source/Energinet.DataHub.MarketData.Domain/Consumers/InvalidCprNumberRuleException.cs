@@ -16,25 +16,25 @@ using System;
 using System.Runtime.Serialization;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
-    public class InvalidCvrNumberRuleException : BusinessRuleException
+    public class InvalidCprNumberRuleException : BusinessRuleException
     {
-        public InvalidCvrNumberRuleException()
+        public InvalidCprNumberRuleException()
         {
         }
 
-        public InvalidCvrNumberRuleException(string? message)
+        public InvalidCprNumberRuleException(string? message)
             : base(message)
         {
         }
 
-        public InvalidCvrNumberRuleException(string message, Exception innerException)
+        public InvalidCprNumberRuleException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        protected InvalidCvrNumberRuleException(SerializationInfo info, StreamingContext context)
+        protected InvalidCprNumberRuleException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

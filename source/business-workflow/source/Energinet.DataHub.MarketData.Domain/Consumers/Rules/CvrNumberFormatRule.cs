@@ -15,7 +15,7 @@
 using Energinet.DataHub.MarketData.Domain.Helpers;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers.Rules
+namespace Energinet.DataHub.MarketData.Domain.Consumers.Rules
 {
     internal class CvrNumberFormatRule : IBusinessRule
     {

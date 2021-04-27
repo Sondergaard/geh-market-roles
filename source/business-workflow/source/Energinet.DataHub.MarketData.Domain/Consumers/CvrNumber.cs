@@ -14,10 +14,10 @@
 
 using System;
 using System.Collections.Generic;
-using Energinet.DataHub.MarketData.Domain.Customers.Rules;
+using Energinet.DataHub.MarketData.Domain.Consumers.Rules;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public class CvrNumber : CustomerId
     {

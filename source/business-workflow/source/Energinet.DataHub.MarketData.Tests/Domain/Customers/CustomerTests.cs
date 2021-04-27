@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.MarketData.Domain.Customers;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using FluentAssertions;
 using GreenEnergyHub.TestHelpers.Traits;
 using Xunit;
@@ -26,7 +26,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.Customers
         public void Create_UsingCprNumber_IsSuccessful()
         {
             var cprNumber = CprNumber.Create("2601211234");
-            var customer = new Customer(cprNumber);
+            var customer = new Consumer(cprNumber);
 
             Assert.Equal(cprNumber.Value, customer.CustomerId.Value);
         }
@@ -35,7 +35,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.Customers
         public void Create_UsingCvrNumber_IsSuccessful()
         {
             var cvrNumber = CvrNumber.Create("10000000");
-            var customer = new Customer(cvrNumber);
+            var customer = new Consumer(cvrNumber);
 
             Assert.Equal(cvrNumber.Value, customer.CustomerId.Value);
         }

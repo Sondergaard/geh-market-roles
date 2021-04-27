@@ -14,11 +14,11 @@
 
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
-    public class Customer : AggregateRootBase
+    public class Consumer : AggregateRootBase
     {
-        public Customer(CustomerId customerId)
+        public Consumer(CustomerId customerId)
         {
             CustomerId = customerId;
         }

@@ -16,7 +16,7 @@ using Energinet.DataHub.MarketData.Domain.Helpers;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 using NodaTime.Text;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers.Rules
+namespace Energinet.DataHub.MarketData.Domain.Consumers.Rules
 {
     internal class CprNumberFormatRule : IBusinessRule
     {

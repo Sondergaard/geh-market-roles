@@ -14,7 +14,7 @@
 
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.Customers
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public abstract class CustomerId : ValueObject
     {

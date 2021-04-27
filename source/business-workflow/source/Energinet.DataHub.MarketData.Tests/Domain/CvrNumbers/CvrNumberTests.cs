@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.MarketData.Domain.Customers;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using FluentAssertions;
 using Xunit;
 
