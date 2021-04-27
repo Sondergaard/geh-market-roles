@@ -12,17 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
 namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public class Consumer : AggregateRootBase
     {
-        public Consumer(CustomerId customerId)
+        public Consumer(ConsumerId consumerId, CprNumber cprNumber)
         {
-            CustomerId = customerId;
+            ConsumerId = consumerId ?? throw new ArgumentNullException(nameof(consumerId));
+            CprNumber = cprNumber ?? throw new ArgumentNullException(nameof(cprNumber));
         }
 
-        public CustomerId CustomerId { get; }
+        public Consumer(ConsumerId consumerId, CvrNumber cvrNumber)
+        {
+            ConsumerId = consumerId ?? throw new ArgumentNullException(nameof(consumerId));
+            CvrNumber = cvrNumber ?? throw new ArgumentNullException(nameof(cvrNumber));
+        }
+
+        private Consumer()
+        {
+            // EF Core only
+        }
+
+        public ConsumerId ConsumerId { get; } = null!;
+
+        public CprNumber? CprNumber { get; }
+
+        public CvrNumber? CvrNumber { get; }
     }
 }

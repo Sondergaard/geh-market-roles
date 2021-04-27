@@ -15,15 +15,20 @@
 using System;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 
-namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public class ConsumerId : ValueObject
     {
-        public ConsumerId(string value)
+        public ConsumerId(int value)
         {
-            Value = !string.IsNullOrWhiteSpace(value) ? value : throw new ArgumentNullException(nameof(value));
+            Value = value;
         }
 
-        public string Value { get; }
+        public int Value { get; }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

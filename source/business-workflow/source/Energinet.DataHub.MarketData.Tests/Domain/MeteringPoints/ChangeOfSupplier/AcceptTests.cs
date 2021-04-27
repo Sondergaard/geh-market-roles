@@ -14,6 +14,7 @@
 
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Events;
@@ -156,7 +157,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
 
         private static ConsumerId CreateConsumerId()
         {
-            return new ConsumerId("FakeConsumerId");
+            return new ConsumerId(1);
         }
 
         private static EnergySupplierId CreateSupplierId()

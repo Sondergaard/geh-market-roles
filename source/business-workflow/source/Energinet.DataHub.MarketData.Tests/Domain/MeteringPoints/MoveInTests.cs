@@ -15,6 +15,7 @@
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses.Exceptions;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier;
@@ -60,7 +61,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         public void Accept_WhenPendingMoveInOnSameEffectiveDate_IsNotPossible()
         {
             var meteringPoint = Create();
-            var consumerId = new ConsumerId(Guid.NewGuid().ToString());
+            var consumerId = new ConsumerId(2);
             var energySupplierId = new EnergySupplierId(1);
             var moveInDate = _systemDateTimeProvider.Now();
             var processId = new ProcessId(Guid.NewGuid().ToString());
@@ -82,7 +83,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         {
             return (
                 Create(),
-                new ConsumerId(Guid.NewGuid().ToString()),
+                new ConsumerId(1),
                 new EnergySupplierId(1),
                 new ProcessId(Guid.NewGuid().ToString()));
         }

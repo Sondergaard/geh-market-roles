@@ -15,6 +15,7 @@
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses.Exceptions;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Events;
@@ -63,7 +64,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         {
             var accountingPoint = new AccountingPoint(GsrnNumber.Create("571234567891234568"), MeteringPointType.Consumption);
             var processId = CreateProcessId();
-            accountingPoint.AcceptConsumerMoveIn(new ConsumerId("FakeConsumerId"), CreateEnergySupplierId(), _systemDateTimeProvider.Now().Minus(Duration.FromDays(365)), processId);
+            accountingPoint.AcceptConsumerMoveIn(CreateConsumerId(), CreateEnergySupplierId(), _systemDateTimeProvider.Now().Minus(Duration.FromDays(365)), processId);
             accountingPoint.EffectuateConsumerMoveIn(processId, _systemDateTimeProvider);
             return (accountingPoint, processId);
         }
@@ -76,6 +77,11 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         private EnergySupplierId CreateEnergySupplierId()
         {
             return new EnergySupplierId(1);
+        }
+
+        private ConsumerId CreateConsumerId()
+        {
+            return new ConsumerId(1);
         }
     }
 }

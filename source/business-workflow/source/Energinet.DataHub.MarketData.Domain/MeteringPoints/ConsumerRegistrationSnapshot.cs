@@ -19,14 +19,14 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 {
     public class ConsumerRegistrationSnapshot
     {
-        public ConsumerRegistrationSnapshot(string consumerId, Instant moveInDate, string processId)
+        public ConsumerRegistrationSnapshot(int consumerId, Instant moveInDate, string processId)
         {
             ConsumerId = consumerId;
             MoveInDate = moveInDate;
             ProcessId = processId;
         }
 
-        public string ConsumerId { get; }
+        public int ConsumerId { get; }
 
         public Instant MoveInDate { get; }
 

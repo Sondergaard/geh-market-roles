@@ -20,24 +20,29 @@ using Xunit;
 namespace Energinet.DataHub.MarketData.Tests.Domain.Customers
 {
     [Trait(TraitNames.Category, TraitValues.UnitTest)]
-    public class CustomerTests
+    public class ConsumerTests
     {
         [Fact]
         public void Create_UsingCprNumber_IsSuccessful()
         {
             var cprNumber = CprNumber.Create("2601211234");
-            var customer = new Consumer(cprNumber);
+            var customer = new Consumer(CreateConsumerId(), cprNumber);
 
-            Assert.Equal(cprNumber.Value, customer.CustomerId.Value);
+            Assert.Equal(cprNumber, customer.CprNumber);
         }
 
         [Fact]
         public void Create_UsingCvrNumber_IsSuccessful()
         {
             var cvrNumber = CvrNumber.Create("10000000");
-            var customer = new Consumer(cvrNumber);
+            var customer = new Consumer(CreateConsumerId(), cvrNumber);
 
-            Assert.Equal(cvrNumber.Value, customer.CustomerId.Value);
+            Assert.Equal(cvrNumber, customer.CvrNumber);
+        }
+
+        private ConsumerId CreateConsumerId()
+        {
+            return new ConsumerId(1);
         }
     }
 }

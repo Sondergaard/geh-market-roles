@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses.Exceptions;
+using Energinet.DataHub.MarketData.Domain.Consumers;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Events;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier;
 using Energinet.DataHub.MarketData.Domain.SeedWork;

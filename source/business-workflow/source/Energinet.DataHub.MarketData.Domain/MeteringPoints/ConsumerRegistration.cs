@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 using NodaTime;
 
