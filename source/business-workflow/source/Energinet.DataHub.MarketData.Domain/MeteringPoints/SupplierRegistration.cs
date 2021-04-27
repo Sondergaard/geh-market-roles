@@ -14,6 +14,7 @@
 
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 using NodaTime;
 
@@ -59,7 +60,7 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 
         public SupplierRegistrationSnapshot GetSnapshot()
         {
-            return new SupplierRegistrationSnapshot(EnergySupplierId.Value, StartOfSupplyDate, EndOfSupplyDate, ProcessId.Value !);
+            return new SupplierRegistrationSnapshot(EnergySupplierId.ToString(), StartOfSupplyDate, EndOfSupplyDate, ProcessId.Value !);
         }
 
         public void MarkEndOfSupply(Instant endOfSupplyDate)

@@ -14,6 +14,7 @@
 
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Events;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier;
@@ -160,7 +161,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
 
         private static EnergySupplierId CreateSupplierId()
         {
-            return new EnergySupplierId("FakeSupplierId");
+            return new EnergySupplierId(1);
         }
 
         private static MarketParticipantMrid CreateCustomerId()

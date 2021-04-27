@@ -15,6 +15,7 @@
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses.Exceptions;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Events;
 using GreenEnergyHub.TestHelpers.Traits;
@@ -39,7 +40,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         {
             var (meteringPoint, _) = CreateWithActiveMoveIn();
             var processId = CreateProcessId();
-            meteringPoint.AcceptChangeOfSupplier(new EnergySupplierId("NewEnergySupplierId"), _systemDateTimeProvider.Now().Plus(Duration.FromDays(5)), processId, _systemDateTimeProvider);
+            meteringPoint.AcceptChangeOfSupplier(CreateEnergySupplierId(), _systemDateTimeProvider.Now().Plus(Duration.FromDays(5)), processId, _systemDateTimeProvider);
 
             meteringPoint.CancelChangeOfSupplier(processId);
 
@@ -52,7 +53,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
             var (meteringPoint, _) = CreateWithActiveMoveIn();
             var processId = CreateProcessId();
             var supplyStartDate = _systemDateTimeProvider.Now(); //.Plus(Duration.FromDays(5));
-            meteringPoint.AcceptChangeOfSupplier(new EnergySupplierId("NewEnergySupplierId"), supplyStartDate, processId, _systemDateTimeProvider);
+            meteringPoint.AcceptChangeOfSupplier(CreateEnergySupplierId(), supplyStartDate, processId, _systemDateTimeProvider);
             meteringPoint.EffectuateChangeOfSupplier(processId, _systemDateTimeProvider);
 
             Assert.Throws<BusinessProcessException>(() => meteringPoint.CancelChangeOfSupplier(processId));
@@ -62,7 +63,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         {
             var accountingPoint = new AccountingPoint(GsrnNumber.Create("571234567891234568"), MeteringPointType.Consumption);
             var processId = CreateProcessId();
-            accountingPoint.AcceptConsumerMoveIn(new ConsumerId("FakeConsumerId"), new EnergySupplierId("FakeEnergySupplierId"), _systemDateTimeProvider.Now().Minus(Duration.FromDays(365)), processId);
+            accountingPoint.AcceptConsumerMoveIn(new ConsumerId("FakeConsumerId"), CreateEnergySupplierId(), _systemDateTimeProvider.Now().Minus(Duration.FromDays(365)), processId);
             accountingPoint.EffectuateConsumerMoveIn(processId, _systemDateTimeProvider);
             return (accountingPoint, processId);
         }
@@ -70,6 +71,11 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         private ProcessId CreateProcessId()
         {
             return new ProcessId(Guid.NewGuid().ToString());
+        }
+
+        private EnergySupplierId CreateEnergySupplierId()
+        {
+            return new EnergySupplierId(1);
         }
     }
 }

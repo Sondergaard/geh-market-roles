@@ -15,6 +15,7 @@
 using System;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses.Exceptions;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
@@ -60,7 +61,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
         {
             var meteringPoint = Create();
             var consumerId = new ConsumerId(Guid.NewGuid().ToString());
-            var energySupplierId = new EnergySupplierId(Guid.NewGuid().ToString());
+            var energySupplierId = new EnergySupplierId(1);
             var moveInDate = _systemDateTimeProvider.Now();
             var processId = new ProcessId(Guid.NewGuid().ToString());
 
@@ -82,7 +83,7 @@ namespace Energinet.DataHub.MarketData.Tests.Domain.MeteringPoints
             return (
                 Create(),
                 new ConsumerId(Guid.NewGuid().ToString()),
-                new EnergySupplierId(Guid.NewGuid().ToString()),
+                new EnergySupplierId(1),
                 new ProcessId(Guid.NewGuid().ToString()));
         }
     }
