@@ -33,7 +33,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.InternalCommand
 
         public async Task<InternalCommand?> GetUnprocessedInternalCommandAsync()
         {
-            return await _writeDatabaseContext.InternalCommandDataModels
+            //return await _writeDatabaseContext.InternalCommandDataModels
+            return await _writeDatabaseContext.Set<InternalCommandDataModel>()
                 .Where(x => !x.ProcessedDate.HasValue)
                 .Where(x => !x.ScheduledDate.HasValue || x.ScheduledDate.Value <= _clock.GetCurrentInstant())
                 .Select(x => new InternalCommand

@@ -20,7 +20,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 {
-    internal class BusinessProcess : Entity
+    public class BusinessProcess : Entity
     {
         internal BusinessProcess(ProcessId processId, Instant effectiveDate, BusinessProcessType processType)
         {
@@ -28,6 +28,13 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
             EffectiveDate = effectiveDate;
             ProcessType = processType;
             Status = BusinessProcessStatus.Pending;
+        }
+
+#pragma warning disable 8618
+        private BusinessProcess()
+#pragma warning restore 8618
+        {
+            // For EF core
         }
 
         public ProcessId ProcessId { get; }

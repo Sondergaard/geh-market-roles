@@ -34,7 +34,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.Outbox
 
         public async Task<ForwardMessage?> GetUnprocessedForwardMessageAsync()
         {
-            return await _writeDatabaseContext.OutgoingActorMessageDataModels
+            //return await _writeDatabaseContext.OutgoingActorMessageDataModels
+            return await _writeDatabaseContext.Set<OutgoingActorMessageDataModel>()
                 .Where(x => x.State == OutboxState.Pending.Id)
                 .Select(x => new ForwardMessage
                 {
@@ -48,7 +49,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.Outbox
 
         public async Task MarkForwardedMessageAsProcessedAsync(Guid id)
         {
-            var outgoingActorMessage = await _writeDatabaseContext.OutgoingActorMessageDataModels
+            //var outgoingActorMessage = await _writeDatabaseContext.OutgoingActorMessageDataModels
+            var outgoingActorMessage = await _writeDatabaseContext.Set<OutgoingActorMessageDataModel>()
                 .SingleAsync(x => x.Id == id);
 
             outgoingActorMessage.LastUpdatedOn = _systemDateTimeProvider.Now();

@@ -21,7 +21,7 @@ namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public class CvrNumber : CustomerId
     {
-        private CvrNumber(string value)
+        public CvrNumber(string value)
         : base(value)
         {
         }

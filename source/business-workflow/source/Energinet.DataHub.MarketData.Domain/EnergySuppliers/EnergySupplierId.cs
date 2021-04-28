@@ -29,6 +29,11 @@ namespace Energinet.DataHub.MarketData.Domain.EnergySuppliers
             Value = value;
         }
 
+        public EnergySupplierId()
+        {
+            Value = -1;
+        }
+
         public int Value { get; }
 
         public override string ToString()

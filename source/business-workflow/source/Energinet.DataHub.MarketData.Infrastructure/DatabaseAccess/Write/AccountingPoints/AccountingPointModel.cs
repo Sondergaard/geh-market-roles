@@ -14,26 +14,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.MeteringPoints
 {
-    public class MeteringPointDataModel
+    public class AccountingPointModel
     {
 #pragma warning disable 8618 //Empty constructor needed to satisfy EntityFramework
-        public MeteringPointDataModel()
+        public AccountingPointModel()
 #pragma warning restore 8618
         { }
 
-        public MeteringPointDataModel(Guid id, string gsrnNumber, int type, bool productionObligated, int physicalState, ICollection<RelationshipDataModel> relationshipDataModels, int version)
+        public AccountingPointModel(Guid id, string gsrnNumber, int type, bool productionObligated, int physicalState, ICollection<BusinessProcessModel> businessProcesses, int version)
         {
             Id = id;
             GsrnNumber = gsrnNumber;
             Type = type;
             ProductionObligated = productionObligated;
             PhysicalState = physicalState;
-            RelationshipDataModels = relationshipDataModels;
+            BusinessProcesses = businessProcesses;
             RowVersion = version;
         }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int RecordId { get; set; }
 
         public Guid Id { get; set; }
 
@@ -47,6 +51,6 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Meter
 
         public int RowVersion { get; set; }
 
-        public ICollection<RelationshipDataModel> RelationshipDataModels { get; set; }
+        public ICollection<BusinessProcessModel> BusinessProcesses { get; set; }
     }
 }

@@ -46,7 +46,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.ActorMessages
             var payload = _jsonSerializer.Serialize(message);
 
             var outboxMessage = new OutgoingActorMessage(_systemDateTimeProvider.Now(), messageType, payload, recipient);
-            await _writeDatabaseContext.OutgoingActorMessageDataModels.AddAsync(new OutgoingActorMessageDataModel
+            //await _writeDatabaseContext.OutgoingActorMessageDataModels.AddAsync(new OutgoingActorMessageDataModel
+            await _writeDatabaseContext.Set<OutgoingActorMessageDataModel>().AddAsync(new OutgoingActorMessageDataModel
             {
                 Id = outboxMessage.Id,
                 Data = outboxMessage.Data,

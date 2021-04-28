@@ -19,17 +19,27 @@ namespace Energinet.DataHub.MarketData.Domain.EnergySuppliers
 {
     public class EnergySupplier : AggregateRootBase
     {
-        public EnergySupplier(GlnNumber glnNumber)
+        public EnergySupplier(EnergySupplierId energySupplierId, GlnNumber glnNumber)
             : base()
         {
+            EnergySupplierId = energySupplierId ?? throw new ArgumentNullException(nameof(energySupplierId));
             GlnNumber = glnNumber ?? throw new ArgumentNullException(nameof(glnNumber));
         }
+
+#pragma warning disable 8618
+        private EnergySupplier()
+#pragma warning restore 8618
+        {
+            // EF core
+        }
+
+        public EnergySupplierId EnergySupplierId { get; }
 
         public GlnNumber GlnNumber { get; }
 
         public EnergySupplierSnapshot GetSnapshot()
         {
-            return new EnergySupplierSnapshot(Id, GlnNumber.Value, Version);
+            return new EnergySupplierSnapshot(Guid.Empty, GlnNumber.Value, Version);
         }
     }
 }

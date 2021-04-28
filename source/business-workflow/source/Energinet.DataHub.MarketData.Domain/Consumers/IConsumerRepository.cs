@@ -14,31 +14,24 @@
 
 using System.Threading.Tasks;
 
-namespace Energinet.DataHub.MarketData.Domain.EnergySuppliers
+namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     /// <summary>
-    /// Repository of energy suppliers
+    /// Repository for consumer entities
     /// </summary>
-    public interface IEnergySupplierRepository
+    public interface IConsumerRepository
     {
         /// <summary>
-        /// Checks if an energy supplier id exists
+        /// Adds a new consumer to repository
         /// </summary>
-        /// <param name="glnNumber"></param>
-        /// <returns><see cref="bool"/></returns>
-        Task<bool> ExistsAsync(GlnNumber glnNumber);
+        /// <param name="consumer"></param>
+        void Add(Consumer consumer);
 
         /// <summary>
-        /// Add new energy supplier
+        /// Find consumer by CPR number
         /// </summary>
-        /// <param name="energySupplier"></param>
-        void Add(EnergySupplier energySupplier);
-
-        /// <summary>
-        /// Find Energy supplier by GLN number
-        /// </summary>
-        /// <param name="glnNumber"></param>
-        /// <returns><see cref="EnergySupplier"/></returns>
-        Task<EnergySupplier> GetByGlnNumberAsync(GlnNumber glnNumber);
+        /// <param name="cprNumber"></param>
+        /// <returns><see cref="Consumer"/></returns>
+        Task<Consumer> GetByCprNumberAsync(CprNumber cprNumber);
     }
 }

@@ -16,11 +16,11 @@ using Energinet.DataHub.MarketData.Domain.SeedWork;
 
 namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 {
-    internal class BusinessProcessStatus : EnumerationType
+    public class BusinessProcessStatus : EnumerationType
     {
-        internal static readonly BusinessProcessStatus Pending = new BusinessProcessStatus(0, nameof(Pending));
-        internal static readonly BusinessProcessStatus Cancelled = new BusinessProcessStatus(1, nameof(Cancelled));
-        internal static readonly BusinessProcessStatus Completed = new BusinessProcessStatus(2, nameof(Completed));
+        public static readonly BusinessProcessStatus Pending = new BusinessProcessStatus(0, nameof(Pending));
+        public static readonly BusinessProcessStatus Cancelled = new BusinessProcessStatus(1, nameof(Cancelled));
+        public static readonly BusinessProcessStatus Completed = new BusinessProcessStatus(2, nameof(Completed));
 
         private BusinessProcessStatus(int id, string name)
             : base(id, name)

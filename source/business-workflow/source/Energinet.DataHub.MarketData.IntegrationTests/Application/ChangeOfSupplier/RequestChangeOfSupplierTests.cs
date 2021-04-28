@@ -19,15 +19,18 @@ using Energinet.DataHub.MarketData.Application.ChangeOfSupplier;
 using Energinet.DataHub.MarketData.Application.ChangeOfSupplier.ActorMessages;
 using Energinet.DataHub.MarketData.Application.Common;
 using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.Consumers;
 using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints;
 using Energinet.DataHub.MarketData.Domain.MeteringPoints.Rules.ChangeEnergySupplier;
 using Energinet.DataHub.MarketData.Domain.SeedWork;
 using Energinet.DataHub.MarketData.Infrastructure.ActorMessages;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write;
+using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Consumers;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.EnergySuppliers;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.MeteringPoints;
 using Energinet.DataHub.MarketData.Infrastructure.IntegrationEvents;
+using Energinet.DataHub.MarketData.Infrastructure.Outbox;
 using Energinet.DataHub.MarketData.Infrastructure.UseCaseProcessing;
 using GreenEnergyHub.Json;
 using GreenEnergyHub.Messaging;
@@ -49,6 +52,7 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
         private readonly IMediator _mediator;
         private readonly IMeteringPointRepository _meteringPointRepository;
         private readonly IEnergySupplierRepository _energySupplierRepository;
+        private readonly IConsumerRepository _consumerRepository;
         private readonly IActorMessagePublisher _actorMessagePublisher;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWriteDatabaseContext _writeDatabaseContext;
@@ -67,6 +71,7 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
             services.AddScoped<IActorMessagePublisher, ActorMessagePublisher>();
             services.AddScoped<IMeteringPointRepository, MeteringPointRepository>();
             services.AddScoped<IEnergySupplierRepository, EnergySupplierRepository>();
+            services.AddScoped<IConsumerRepository, ConsumerRepository>();
             services.AddScoped<IJsonSerializer, JsonSerializer>();
 
             services.AddMediatR(new[]
@@ -84,9 +89,12 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
             _mediator = _serviceProvider.GetRequiredService<IMediator>();
             _meteringPointRepository = _serviceProvider.GetRequiredService<IMeteringPointRepository>();
             _energySupplierRepository = _serviceProvider.GetRequiredService<IEnergySupplierRepository>();
+            _consumerRepository = _serviceProvider.GetRequiredService<IConsumerRepository>();
             _actorMessagePublisher = _serviceProvider.GetRequiredService<IActorMessagePublisher>();
             _unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
             _writeDatabaseContext = _serviceProvider.GetRequiredService<IWriteDatabaseContext>();
+
+            CleanupDatabase();
         }
 
         [Fact]
@@ -183,7 +191,8 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
 
         private async Task<TMessage> GetLastMessageFromOutboxAsync<TMessage>()
         {
-            var outboxMessage = await _writeDatabaseContext.OutgoingActorMessageDataModels.FirstAsync();
+            //var outboxMessage = await _writeDatabaseContext.OutgoingActorMessageDataModels.FirstAsync();
+            var outboxMessage = await _writeDatabaseContext.Set<OutgoingActorMessageDataModel>().FirstAsync();
 
             var serializer = new GreenEnergyHub.Json.JsonSerializer();
             var @event = serializer.Deserialize<TMessage>(outboxMessage.Data);
@@ -195,39 +204,64 @@ namespace Energinet.DataHub.MarketData.IntegrationTests.Application.ChangeOfSupp
             var cleanupStatement =
                 $"DELETE FROM [dbo].[OutgoingActorMessages] " +
                 $"DELETE FROM [dbo].[Relationships] " +
-                $"DELETE FROM [dbo].[MarketParticipants] " +
-                $"DELETE FROM [dbo].[MarketEvaluationPoints]";
+                $"DELETE FROM [dbo].[EnergySuppliers] " +
+                $"DELETE FROM [dbo].[BusinessProcesses] " +
+                $"DELETE FROM [dbo].[AccountingPoints] " +
+                $"DELETE FROM [dbo].[Consumers]";
 
             _writeDatabaseContext.Database.ExecuteSqlRaw(cleanupStatement);
-            _writeDatabaseContext.Dispose();
         }
 
         private async Task Seed(string energySupplierGlnNumber, string meteringPointGsrnNumber)
         {
-            //TODO: Need to separate customers from energy suppliers - This does not make any sense at all
-            var customerId = "Unknown";
-            var customer = new EnergySupplier(new GlnNumber(customerId));
-            _energySupplierRepository.Add(customer);
+            var systemTimeProvider = _serviceProvider.GetRequiredService<ISystemDateTimeProvider>();
 
-            var energySupplierGln = new GlnNumber(energySupplierGlnNumber);
-            var energySupplier = new EnergySupplier(energySupplierGln);
-            _energySupplierRepository.Add(energySupplier);
+            var cprNumber = CreateCprNumber("2601211234");
+            _consumerRepository.Add(CreatePrivateConsumer(cprNumber));
 
+            var glnNumber = CreateGlnNumber("FakeGln");
+            _energySupplierRepository.Add(CreateEnergySupplier(glnNumber));
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
             var meteringPoint =
                 AccountingPoint.CreateProduction(
                     GsrnNumber.Create(meteringPointGsrnNumber), true);
 
-            var systemTimeProvider = _serviceProvider.GetRequiredService<ISystemDateTimeProvider>();
+            var consumer = await _consumerRepository.GetByCprNumberAsync(cprNumber);
+            var energySupplier = await _energySupplierRepository.GetByGlnNumberAsync(glnNumber);
 
-            var consumerId = new ConsumerId(customerId);
             var moveInDate = systemTimeProvider.Now().Minus(Duration.FromDays(365));
             var processId = new ProcessId(Guid.NewGuid().ToString());
-            meteringPoint.AcceptConsumerMoveIn(consumerId, new EnergySupplierId(energySupplierGlnNumber), moveInDate, processId);
-            meteringPoint.EffectuateConsumerMoveIn(processId, systemTimeProvider);
+            meteringPoint.AcceptConsumerMoveIn(consumer.ConsumerId, energySupplier.EnergySupplierId, moveInDate, processId);
+             meteringPoint.EffectuateConsumerMoveIn(processId, systemTimeProvider);
             _meteringPointRepository.Add(meteringPoint);
+
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
+        }
+
+        private GlnNumber CreateGlnNumber(string glnNumber)
+        {
+            return new GlnNumber(glnNumber);
+        }
+
+        private EnergySupplier CreateEnergySupplier(string gln)
+        {
+            return new EnergySupplier(new EnergySupplierId(), CreateGlnNumber(gln));
+        }
+
+        private EnergySupplier CreateEnergySupplier(GlnNumber glnNumber)
+        {
+            return new EnergySupplier(new EnergySupplierId(), glnNumber);
+        }
+
+        private Consumer CreatePrivateConsumer(CprNumber cprNumber)
+        {
+            return new Consumer(new ConsumerId(), cprNumber);
+        }
+
+        private CprNumber CreateCprNumber(string cprNumber)
+        {
+            return CprNumber.Create(cprNumber);
         }
     }
 }

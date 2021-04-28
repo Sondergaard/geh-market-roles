@@ -44,6 +44,6 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Meter
 
         public EnergySupplierDataModel? EnergySupplierDataModel { get; set; }
 
-        public MeteringPointDataModel? MarketEvaluationPointDataModel { get; set; }
+        public AccountingPointModel? MarketEvaluationPointDataModel { get; set; }
     }
 }

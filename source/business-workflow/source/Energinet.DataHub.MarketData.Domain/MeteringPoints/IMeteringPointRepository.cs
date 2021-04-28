@@ -34,10 +34,10 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
         /// <param name="accountingPoint"></param>
         void Add(AccountingPoint accountingPoint);
 
-        /// <summary>
-        /// Saves changes
-        /// </summary>
-        /// <param name="accountingPoint"></param>
-        Task SaveAsync(AccountingPoint accountingPoint);
+        // /// <summary>
+        // /// Saves changes
+        // /// </summary>
+        // /// <param name="accountingPoint"></param>
+        // Task SaveAsync(AccountingPoint accountingPoint);
     }
 }

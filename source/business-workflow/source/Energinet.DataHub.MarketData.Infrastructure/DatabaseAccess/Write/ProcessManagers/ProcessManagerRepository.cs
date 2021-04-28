@@ -32,8 +32,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Proce
 
         public async Task<IProcessManager> GetAsync(ProcessId processManagerId)
         {
-            var processManagerDataModel = await _databaseContext.ProcessManagerDataModels.SingleAsync(x => x.ProcessId == processManagerId.Value);
-
+            var processManagerDataModel = await _databaseContext.Set<ProcessManagerDataModel>().SingleAsync(x => x.ProcessId == processManagerId.Value);
+            //var processManagerDataModel = await _databaseContext.ProcessManagerDataModels.SingleAsync(x => x.ProcessId == processManagerId.Value);
             switch (processManagerDataModel.Type)
             {
                 case nameof(ChangeOfSupplierProcessManager):
@@ -55,7 +55,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Proce
                 Type = processManager.GetType().Name,
             };
 
-            _databaseContext.ProcessManagerDataModels.Add(processManagerDataModel);
+            //_databaseContext.ProcessManagerDataModels.Add(processManagerDataModel);
+            _databaseContext.Set<ProcessManagerDataModel>().Add(processManagerDataModel);
         }
 
         public async Task SaveAsync(IProcessManager processManager)
@@ -65,7 +66,8 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Proce
                 throw new ArgumentException(nameof(processManager.ProcessId));
             }
 
-            var processManagerDataModel = await _databaseContext.ProcessManagerDataModels.SingleAsync(x => x.ProcessId == processManager.ProcessId.Value);
+            //var processManagerDataModel = await _databaseContext.ProcessManagerDataModels.SingleAsync(x => x.ProcessId == processManager.ProcessId.Value);
+            var processManagerDataModel = await _databaseContext.Set<ProcessManagerDataModel>().SingleAsync(x => x.ProcessId == processManager.ProcessId.Value);
 
             processManagerDataModel.State = processManager.State;
             processManagerDataModel.EffectiveDate = processManager.EffectiveDate;

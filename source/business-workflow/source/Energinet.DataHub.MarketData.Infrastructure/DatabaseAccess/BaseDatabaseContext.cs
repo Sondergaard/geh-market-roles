@@ -15,6 +15,11 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Energinet.DataHub.MarketData.Domain.BusinessProcesses;
+using Energinet.DataHub.MarketData.Domain.Consumers;
+using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
+using Energinet.DataHub.MarketData.Domain.MeteringPoints;
+using Energinet.DataHub.MarketData.Domain.SeedWork;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.EnergySuppliers;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.MeteringPoints;
 using Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.ProcessManagers;
@@ -32,29 +37,33 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess
     public interface IBaseDatabaseContext : IDisposable
     {
         /// <summary>
+        /// Entity Framework DbSet for Consumers
+        /// </summary>
+        DbSet<Consumer> Consumers { get; set; }
+
+        /// <summary>
         /// Entity Framework DbSet for Metering Points
         /// </summary>
-        DbSet<MeteringPointDataModel> MarketEvaluationPointDataModels { get; set; }
+        DbSet<AccountingPoint> AccountingPoints { get; set; }
 
         /// <summary>
         /// Entity Framework DbSet for Energy Suppliers
         /// </summary>
-        DbSet<EnergySupplierDataModel> EnergySupplierDataModels { get; set; }
+        DbSet<EnergySupplier> EnergySuppliers { get; set; }
+        // /// <summary>
+        // /// Entity Framework DbSet for Internal Commands
+        // /// </summary>
+        // DbSet<InternalCommandDataModel> InternalCommandDataModels { get; set; }
+        //
+        // /// <summary>
+        // /// Entity Framework DbSet for Outgoing Actor Messages
+        // /// </summary>
+        // DbSet<OutgoingActorMessageDataModel> OutgoingActorMessageDataModels { get; set; }
 
-        /// <summary>
-        /// Entity Framework DbSet for Internal Commands
-        /// </summary>
-        DbSet<InternalCommandDataModel> InternalCommandDataModels { get; set; }
-
-        /// <summary>
-        /// Entity Framework DbSet for Outgoing Actor Messages
-        /// </summary>
-        DbSet<OutgoingActorMessageDataModel> OutgoingActorMessageDataModels { get; set; }
-
-        /// <summary>
-        /// Entity Framework DbSet for Process Managers
-        /// </summary>
-        DbSet<ProcessManagerDataModel> ProcessManagerDataModels { get; set; }
+        // /// <summary>
+        // /// Entity Framework DbSet for Process Managers
+        // /// </summary>
+        // DbSet<ProcessManagerDataModel> ProcessManagerDataModels { get; set; }
 
         /// <summary>
         /// Provides access to database related information and operations for this context.
@@ -115,58 +124,145 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess
         {
         }
 
-        public DbSet<MeteringPointDataModel> MarketEvaluationPointDataModels { get; set; } = null!;
+        public DbSet<Consumer> Consumers { get; set; } = null!;
 
-        public DbSet<EnergySupplierDataModel> EnergySupplierDataModels { get; set; } = null!;
+        public DbSet<EnergySupplier> EnergySuppliers { get; set; } = null!;
 
-        public DbSet<InternalCommandDataModel> InternalCommandDataModels { get; set; } = null!;
+        public DbSet<AccountingPoint> AccountingPoints { get; set; } = null!;
+        //public DbSet<InternalCommandDataModel> InternalCommandDataModels { get; set; } = null!;
+        //public DbSet<OutgoingActorMessageDataModel> OutgoingActorMessageDataModels { get; set; } = null!;
 
-        public DbSet<OutgoingActorMessageDataModel> OutgoingActorMessageDataModels { get; set; } = null!;
-
-        public DbSet<ProcessManagerDataModel> ProcessManagerDataModels { get; set; } = null!;
-
+        //public DbSet<ProcessManagerDataModel> ProcessManagerDataModels { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new MarketEvaluationPointDataModelConfiguration());
-            modelBuilder.ApplyConfiguration(new EnergySupplierDataModelConfiguration());
-            modelBuilder.ApplyConfiguration(new InternalCommandQueueDataModelConfiguration());
-            modelBuilder.ApplyConfiguration(new OutgoingActorMessageDataModelConfiguration());
-            modelBuilder.ApplyConfiguration(new ProcessManagerDataModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ConsumerConfiguration());
+            modelBuilder.ApplyConfiguration(new EnergySupplierConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountingPointConfiguration());
+            // modelBuilder.ApplyConfiguration(new InternalCommandQueueDataModelConfiguration());
+            // modelBuilder.ApplyConfiguration(new OutgoingActorMessageDataModelConfiguration());
+            // modelBuilder.ApplyConfiguration(new ProcessManagerDataModelConfiguration());
             // modelBuilder.ApplyConfiguration(new RelationshipModelConfiguration());
         }
 
-        public class MarketEvaluationPointDataModelConfiguration : IEntityTypeConfiguration<MeteringPointDataModel>
+        public class ConsumerConfiguration : IEntityTypeConfiguration<Consumer>
         {
-            public void Configure(EntityTypeBuilder<MeteringPointDataModel> builder)
+            public void Configure(EntityTypeBuilder<Consumer> builder)
             {
-                builder.ToTable("MarketEvaluationPoints", "dbo");
-                builder.HasKey(x => x.Id).HasName("PK_MarketEvaluationPoints").IsClustered();
+                builder.ToTable("Consumers", "dbo");
+                builder.Property<int>("RecordId");
+                builder.HasKey("RecordId");
+                builder.OwnsOne(x => x.ConsumerId, sp =>
+                {
+                    sp.Property(x => x.Value)
+                        .HasColumnName("RecordId")
+                        .HasColumnType("int")
+                        .ValueGeneratedOnAdd().UseIdentityColumn();
+                });
 
-                builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired();
-                builder.Property(x => x.GsrnNumber).HasColumnName(@"GsrnNumber").HasColumnType("nvarchar(36)").HasMaxLength(36).IsRequired();
-                builder.Property(x => x.ProductionObligated).HasColumnName(@"ProductionObligated").HasColumnType("bit").IsRequired();
-                builder.Property(x => x.PhysicalState).HasColumnName(@"PhysicalState").HasColumnType("int").IsRequired();
-                builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("int").IsRequired();
-                builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("int").IsRequired();
+                builder.Property(x => x.CprNumber)
+                    .HasColumnName("CprNumber")
+                    .HasConversion(value => value!.Value, value => value == null ? null : new CprNumber(value));
+                builder.Property(x => x.CvrNumber)
+                    .HasColumnName("CvrNumber")
+                    .HasConversion(value => value!.Value, value => value == null ? null : new CvrNumber(value));
 
-                builder.HasIndex(x => x.Id).HasName("UC_MarketEvaluationPoints_Id").IsUnique();
+                builder.Ignore(x => x.Version);
+                builder.Ignore(x => x.DomainEvents);
             }
         }
 
-        public class EnergySupplierDataModelConfiguration : IEntityTypeConfiguration<EnergySupplierDataModel>
+        public class AccountingPointConfiguration : IEntityTypeConfiguration<AccountingPoint>
         {
-            public void Configure(EntityTypeBuilder<EnergySupplierDataModel> builder)
+            public void Configure(EntityTypeBuilder<AccountingPoint> builder)
             {
-                builder.ToTable("MarketParticipants", "dbo");
-                builder.HasKey(x => x.Id).HasName("Pk_MarketParticipant_Id").IsClustered();
+                builder.ToTable("AccountingPoints", "dbo");
+                builder.Property<int>("RecordId");
+                builder.HasKey("RecordId");
 
-                builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired();
-                builder.Property(x => x.MrId).HasColumnName(@"MrId").HasColumnType("nvarchar(50)").HasMaxLength(50).IsRequired();
-                builder.Property(x => x.RowVersion).HasColumnName(@"RowVersion").HasColumnType("int").IsRequired();
+                builder.OwnsOne(x => x.AccountingPointId, sp =>
+                {
+                    sp.Property(x => x.Value)
+                        .HasColumnName("RecordId")
+                        .HasColumnType("int")
+                        .ValueGeneratedOnAdd().UseIdentityColumn();
+                });
+                builder.Property(x => x.GsrnNumber)
+                    .HasColumnName(@"GsrnNumber")
+                    .HasColumnType("nvarchar(36)")
+                    .HasMaxLength(36)
+                    .IsRequired()
+                    .HasConversion(value => value.Value, value => GsrnNumber.Create(value));
 
-                builder.HasIndex(x => x.Id).HasName("UC_MarketParticipants_Id").IsUnique();
+                builder.Property<bool>("_isProductionObligated")
+                    .HasColumnName(@"ProductionObligated")
+                    .HasColumnType("bit")
+                    .IsRequired();
+
+                builder.Property<PhysicalState>("_physicalState")
+                    .HasColumnName(@"PhysicalState")
+                    .HasColumnType("int")
+                    .IsRequired()
+                    .HasConversion(value => value.Id, value => EnumerationType.FromValue<PhysicalState>(value));
+
+                builder.Property<MeteringPointType>("_meteringPointType")
+                    .HasColumnName(@"Type")
+                    .HasColumnType("int")
+                    .IsRequired()
+                    .HasConversion(value => value.Id, value => EnumerationType.FromValue<MeteringPointType>(value));
+
+                builder.Property<int>(x => x.Version)
+                    .HasColumnName(@"RowVersion")
+                    .HasColumnType("int")
+                    .IsRequired()
+                    .IsConcurrencyToken();
+
+                builder.OwnsMany<Domain.MeteringPoints.BusinessProcess>("_businessProcesses", sp =>
+                {
+                    sp.ToTable("BusinessProcesses", "dbo");
+                    sp.Property<int>("RecordId").ValueGeneratedOnAdd().UseIdentityColumn();
+                    sp.HasKey("RecordId");
+                    sp.WithOwner()
+                        .HasForeignKey("AccountingPointId");
+                    sp.Property(x => x.Status)
+                        .HasColumnName("Status")
+                        .HasConversion(value => value.Id, v => EnumerationType.FromValue<BusinessProcessStatus>(v));
+                    sp.Property(x => x.ProcessId)
+                        .HasColumnName("ProcessId")
+                        .HasConversion<string>(value => value.Value, v => new ProcessId(v));
+                    sp.Property(x => x.ProcessType)
+                        .HasColumnName("ProcessType")
+                        .HasConversion(value => value.Id, value => EnumerationType.FromValue<BusinessProcessType>(value));
+                    sp.Property(x => x.EffectiveDate)
+                        .HasColumnName("EffectiveDate")
+                        .HasColumnType("datetime2")
+                        .IsRequired();
+                });
+            }
+        }
+
+        public class EnergySupplierConfiguration : IEntityTypeConfiguration<EnergySupplier>
+        {
+            public void Configure(EntityTypeBuilder<EnergySupplier> builder)
+            {
+                builder.ToTable("EnergySuppliers", "dbo");
+                builder.Property<int>("RecordId");
+                builder.HasKey("RecordId");
+                builder.OwnsOne(x => x.EnergySupplierId, sp =>
+                {
+                    sp.Property(x => x.Value)
+                        .HasColumnName("RecordId")
+                        .HasColumnType("int")
+                        .ValueGeneratedOnAdd().UseIdentityColumn();
+                });
+
+                builder.Property(x => x.GlnNumber)
+                    .HasColumnName("GlnNumber")
+                    .HasConversion(value => value.Value, value => new GlnNumber(value));
+
+                builder.Ignore(x => x.Version);
+                builder.Ignore(x => x.DomainEvents);
             }
         }
 
@@ -221,26 +317,26 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess
             }
         }
 
-        public class RelationshipDataModelConfiguration : IEntityTypeConfiguration<RelationshipDataModel>
-        {
-            public void Configure(EntityTypeBuilder<RelationshipDataModel> builder)
-            {
-                builder.ToTable("Relationships", "dbo");
-
-                builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired();
-                builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("int").IsRequired();
-                builder.Property(x => x.State).HasColumnName(@"State").HasColumnType("int").IsRequired();
-                builder.Property(x => x.MarketParticipantId).HasColumnName(@"MarketParticipant_Id").HasColumnType("uniqueidentifier").IsRequired();
-                builder.Property(x => x.MarketEvaluationPointId).HasColumnName(@"MarketEvaluationPoint_Id").HasColumnType("uniqueidentifier").IsRequired();
-                builder.Property(x => x.EffectuationDate).HasColumnName(@"EffectuationDate").HasColumnType("datetime2").IsRequired();
-
-                builder.HasOne(x => x.EnergySupplierDataModel).WithMany(x => x!.RelationshipDataModels).HasForeignKey(x => x.MarketParticipantId)
-                    .HasConstraintName("Fk_Relationship_MarketParticipant");
-                builder.HasOne(x => x.MarketEvaluationPointDataModel).WithMany(x => x!.RelationshipDataModels).HasForeignKey(x => x.MarketEvaluationPointId)
-                    .HasConstraintName("Fk_Relationship_MarketEvaluationPoint");
-
-                builder.HasIndex(x => x.Id).HasName("UC_Relationships_Id").IsUnique();
-            }
-        }
+        // public class RelationshipDataModelConfiguration : IEntityTypeConfiguration<RelationshipDataModel>
+        // {
+        //     public void Configure(EntityTypeBuilder<RelationshipDataModel> builder)
+        //     {
+        //         builder.ToTable("Relationships", "dbo");
+        //
+        //         builder.Property(x => x.Id).HasColumnName(@"Id").HasColumnType("uniqueidentifier").IsRequired();
+        //         builder.Property(x => x.Type).HasColumnName(@"Type").HasColumnType("int").IsRequired();
+        //         builder.Property(x => x.State).HasColumnName(@"State").HasColumnType("int").IsRequired();
+        //         builder.Property(x => x.MarketParticipantId).HasColumnName(@"MarketParticipant_Id").HasColumnType("uniqueidentifier").IsRequired();
+        //         builder.Property(x => x.MarketEvaluationPointId).HasColumnName(@"MarketEvaluationPoint_Id").HasColumnType("uniqueidentifier").IsRequired();
+        //         builder.Property(x => x.EffectuationDate).HasColumnName(@"EffectuationDate").HasColumnType("datetime2").IsRequired();
+        //
+        //         builder.HasOne(x => x.EnergySupplierDataModel).WithMany(x => x!.RelationshipDataModels).HasForeignKey(x => x.MarketParticipantId)
+        //             .HasConstraintName("Fk_Relationship_MarketParticipant");
+        //         builder.HasOne(x => x.MarketEvaluationPointDataModel).WithMany(x => x!.BusinessProcesses).HasForeignKey(x => x.MarketEvaluationPointId)
+        //             .HasConstraintName("Fk_Relationship_MarketEvaluationPoint");
+        //
+        //         builder.HasIndex(x => x.Id).HasName("UC_Relationships_Id").IsUnique();
+        //     }
+        // }
     }
 }

@@ -21,7 +21,7 @@ namespace Energinet.DataHub.MarketData.Domain.Consumers
 {
     public class CprNumber : CustomerId
     {
-        private CprNumber(string value)
+        public CprNumber(string value)
             : base(value)
         {
         }

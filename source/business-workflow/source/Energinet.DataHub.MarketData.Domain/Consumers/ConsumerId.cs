@@ -24,6 +24,11 @@ namespace Energinet.DataHub.MarketData.Domain.Consumers
             Value = value;
         }
 
+        public ConsumerId()
+        {
+            Value = -1;
+        }
+
         public int Value { get; }
 
         public override string ToString()

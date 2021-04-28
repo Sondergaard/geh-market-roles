@@ -37,6 +37,7 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 
         public AccountingPoint(GsrnNumber gsrnNumber, MeteringPointType meteringPointType)
         {
+            AccountingPointId = new AccountingPointId();
             GsrnNumber = gsrnNumber;
             _meteringPointType = meteringPointType;
             _physicalState = PhysicalState.New;
@@ -49,52 +50,20 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
             _isProductionObligated = isProductionObligated;
         }
 
-        private AccountingPoint(
-            GsrnNumber gsrnNumber,
-            MeteringPointType meteringPointType,
-            bool isProductionObligated,
-            Guid id,
-            int version,
-            PhysicalState physicalState,
-            List<BusinessProcess> businessProcesses,
-            List<ConsumerRegistration> consumerRegistrations,
-            List<SupplierRegistration> supplierRegistrations)
+#pragma warning disable 8618
+        private AccountingPoint()
+#pragma warning restore 8618
         {
-            GsrnNumber = gsrnNumber;
-            _meteringPointType = meteringPointType;
-            _physicalState = physicalState;
-            _isProductionObligated = isProductionObligated;
-            _businessProcesses = businessProcesses;
-            _consumerRegistrations = consumerRegistrations;
-            _supplierRegistrations = supplierRegistrations;
-            Id = id;
-            Version = version;
+            // EF Core only
         }
+
+        public AccountingPointId AccountingPointId { get; }
 
         public GsrnNumber GsrnNumber { get; private set; }
 
         public static AccountingPoint CreateProduction(GsrnNumber gsrnNumber, bool isObligated)
         {
             return new AccountingPoint(gsrnNumber, MeteringPointType.Production, isObligated);
-        }
-
-        public static AccountingPoint CreateFrom(AccountingPointSnapshot snapshot)
-        {
-            if (snapshot is null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
-
-            return new AccountingPoint(
-                GsrnNumber.Create(snapshot.GsrnNumber),
-                EnumerationType.FromValue<MeteringPointType>(snapshot.MeteringPointType),
-                snapshot.IsProductionObligated,
-                snapshot.Id,
-                snapshot.Version,
-                EnumerationType.FromValue<PhysicalState>(snapshot.PhysicalState),
-                snapshot.BusinessProcesses.Select(r => BusinessProcess.CreateFrom(r)).ToList(),
-                snapshot.ConsumerRegistrations.Select(c => ConsumerRegistration.CreateFrom(c)).ToList(),
-                snapshot.SupplierRegistrations.Select(s => SupplierRegistration.CreateFrom(s)).ToList());
         }
 
         public BusinessRulesValidationResult ChangeSupplierAcceptable(EnergySupplierId energySupplierId, Instant supplyStartDate, ISystemDateTimeProvider systemDateTimeProvider)
@@ -160,24 +129,6 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
                 _physicalState = PhysicalState.ClosedDown;
                 AddDomainEvent(new MeteringPointClosedDown(GsrnNumber));
             }
-        }
-
-        public AccountingPointSnapshot GetSnapshot()
-        {
-            var businessProcesses = _businessProcesses.Select(p => p.GetSnapshot()).ToList();
-            var consumerRegistrations = _consumerRegistrations.Select(c => c.GetSnapshot()).ToList();
-            var supplierRegistrations = _supplierRegistrations.Select(s => s.GetSnapshot()).ToList();
-
-            return new AccountingPointSnapshot(
-                Id,
-                GsrnNumber.Value,
-                _meteringPointType.Id,
-                _isProductionObligated,
-                _physicalState.Id,
-                Version,
-                businessProcesses,
-                consumerRegistrations,
-                supplierRegistrations);
         }
 
         public BusinessRulesValidationResult ConsumerMoveInAcceptable(ConsumerId consumerId, EnergySupplierId energySupplierId, Instant moveInDate, ProcessId processId)

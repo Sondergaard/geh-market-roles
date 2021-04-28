@@ -16,14 +16,18 @@ using Energinet.DataHub.MarketData.Domain.SeedWork;
 
 namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
 {
-    public class BusinessProcessType : EnumerationType
+    public class AccountingPointId : ValueObject
     {
-        public static readonly BusinessProcessType MoveIn = new BusinessProcessType(0, nameof(MoveIn));
-        public static readonly BusinessProcessType ChangeOfSupplier = new BusinessProcessType(1, nameof(ChangeOfSupplier));
-
-        private BusinessProcessType(int id, string name)
-            : base(id, name)
+        public AccountingPointId(int value)
         {
+            Value = value;
         }
+
+        public AccountingPointId()
+        {
+            Value = -1;
+        }
+
+        public int Value { get; }
     }
 }

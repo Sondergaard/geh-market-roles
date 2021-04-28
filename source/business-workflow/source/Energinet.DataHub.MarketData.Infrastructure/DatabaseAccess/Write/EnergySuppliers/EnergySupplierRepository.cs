@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.MarketData.Domain.EnergySuppliers;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,7 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Energ
                 throw new ArgumentNullException(nameof(glnNumber));
             }
 
-            return await _databaseContext.EnergySupplierDataModels.AnyAsync(e => e.MrId == glnNumber.Value);
+            return await _databaseContext.EnergySuppliers.AnyAsync(e => e.GlnNumber == glnNumber);
         }
 
         public void Add(EnergySupplier energySupplier)
@@ -45,15 +46,17 @@ namespace Energinet.DataHub.MarketData.Infrastructure.DatabaseAccess.Write.Energ
                 throw new ArgumentNullException(nameof(energySupplier));
             }
 
-            var snapshot = energySupplier.GetSnapshot();
-            var dataModel = GetDataModelFrom(snapshot);
-
-            _databaseContext.EnergySupplierDataModels.Add(dataModel);
+            _databaseContext.EnergySuppliers.Add(energySupplier);
         }
 
-        private static EnergySupplierDataModel GetDataModelFrom(EnergySupplierSnapshot snapshot)
+        public Task<EnergySupplier> GetByGlnNumberAsync(GlnNumber glnNumber)
         {
-            return new EnergySupplierDataModel(snapshot.Id, snapshot.GlnNumber, snapshot.Version);
+            if (glnNumber is null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            return _databaseContext.EnergySuppliers.SingleOrDefaultAsync(x => x.GlnNumber.Equals(glnNumber));
         }
     }
 }

@@ -26,6 +26,12 @@ namespace Energinet.DataHub.MarketData.Domain.MeteringPoints
             Value = value;
         }
 
+        private GsrnNumber()
+        {
+            // EF Core only
+            Value = string.Empty;
+        }
+
         public string Value { get; }
 
         public static GsrnNumber Create(string gsrn)
