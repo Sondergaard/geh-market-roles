@@ -43,8 +43,8 @@ namespace Energinet.DataHub.MarketRoles.EntryPoints.Ingestion
             program.AssertConfiguration();
             await program.ExecuteApplicationAsync(host).ConfigureAwait(false);
 
-            string username = Guid.NewGuid().ToString("n");
-            string password = Guid.NewGuid().ToString("n");
+            string username = "admin";
+            string password = "passw0rd";
             Console.WriteLine($"Process terminated - {username}/{password}");
         }
 
