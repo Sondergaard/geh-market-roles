@@ -43,7 +43,9 @@ namespace Energinet.DataHub.MarketRoles.EntryPoints.Ingestion
             program.AssertConfiguration();
             await program.ExecuteApplicationAsync(host).ConfigureAwait(false);
 
-            Console.WriteLine("Process terminated");
+            string username = Guid.NewGuid().ToString("n");
+            string password = Guid.NewGuid().ToString("n");
+            Console.WriteLine($"Process terminated - {username}/{password}");
         }
 
         protected override void ConfigureFunctionsWorkerDefaults(IFunctionsWorkerApplicationBuilder options)
