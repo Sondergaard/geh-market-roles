@@ -42,6 +42,8 @@ namespace Energinet.DataHub.MarketRoles.EntryPoints.Ingestion
             var host = program.ConfigureApplication();
             program.AssertConfiguration();
             await program.ExecuteApplicationAsync(host).ConfigureAwait(false);
+            
+            Console.WriteLine("Process terminated");
         }
 
         protected override void ConfigureFunctionsWorkerDefaults(IFunctionsWorkerApplicationBuilder options)
