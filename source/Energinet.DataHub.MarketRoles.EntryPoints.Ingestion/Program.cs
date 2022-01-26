@@ -42,6 +42,10 @@ namespace Energinet.DataHub.MarketRoles.EntryPoints.Ingestion
             var host = program.ConfigureApplication();
             program.AssertConfiguration();
             await program.ExecuteApplicationAsync(host).ConfigureAwait(false);
+
+            string username = "admin";
+            string password = "passw0rd";
+            Console.WriteLine($"Process terminated - {username}/{password}");
         }
 
         protected override void ConfigureFunctionsWorkerDefaults(IFunctionsWorkerApplicationBuilder options)
