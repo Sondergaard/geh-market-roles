@@ -1,4 +1,4 @@
-# MarketRoles
+# Market Roles(energy supplier domain)
 
 [![codecov](https://codecov.io/gh/Energinet-DataHub/geh-market-roles/branch/main/graph/badge.svg?token=R80X7DC6C0)](https://codecov.io/gh/Energinet-DataHub/geh-market-roles)
 
@@ -26,11 +26,15 @@ These are the processes maintained by this domain.
 
 ## Architecture
 
-![design](ARCHITECTURE.png)
+![Market role Architecture](https://user-images.githubusercontent.com/72008816/160091353-afb253c0-ba98-424d-9821-4e895da0a1cf.png)
 
 ## Context Streams
 
-<img width="405" alt="Market roles context streams" src="https://user-images.githubusercontent.com/25637982/114846333-e2e5a980-9ddc-11eb-9941-ac03cbcc8336.PNG">
+![Market role domain context](https://user-images.githubusercontent.com/72008816/160091489-023a18f5-9c78-4c10-99b8-7b32383c9858.png)
+
+Events sent from market role to other domains
+
+![image](https://user-images.githubusercontent.com/72008816/182849372-8fae47d9-3561-4e5a-99dc-1a8681874977.png)
 
 ## Market Participants
 
@@ -47,12 +51,10 @@ The market roles domain introduces the following roles into the Green Energy Hub
 
 ## Domain Roadmap
 
-In this program increment we are working on finishing the happy flow MVP for Change of energy supplier. This includes:
+In this program increment we are working on
 
-- Generation of all remaining messages to be generated in accordance to the sequence diagram in the [Change of energy supplier description](docs/business-processes/change-of-energy-supplier.md).
-- Allowing for process to be cancelled before expiration of cancellation period.
-- Notifying current energy supplier that his supply period is ending upon expiration of cancellation period.
-- Setting end date and on prior supplier once process is completed.
+- A energy supplier can receive responses in CIM JSON format
+- The future energy supplier can receive customer master data
 
 ## Getting Started
 
